@@ -7,17 +7,20 @@ using namespace std;
 */
 
 PID::PID()
-: p_error(0)
-, i_error(0)
-, d_error(0)
-, Kp(0)
-, Ki(0)
-, Kd(0)
+: p_error_(0)
+, i_error_(0)
+, d_error_(0)
+, koeff_p_(0)
+, koeff_i_(0)
+, koeff_d_(0)
 {}
 
 PID::~PID() {}
 
-void PID::Init(double Kp, double Ki, double Kd) {
+void PID::Init(const double& kp, const double& ki, const double& kd) {
+  koeff_p_ = kp;
+  koeff_i_ = ki;
+  koeff_d_ = kd;
 }
 
 void PID::UpdateError(double cte) {

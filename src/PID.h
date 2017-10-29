@@ -6,16 +6,16 @@ public:
   /*
   * Errors
   */
-  double p_error;
-  double i_error;
-  double d_error;
+  double p_error_;
+  double i_error_;
+  double d_error_;
 
   /*
   * Coefficients
   */ 
-  double Kp;
-  double Ki;
-  double Kd;
+  double koeff_p_;
+  double koeff_i_;
+  double koeff_d_;
 
   /*
   * Constructor
@@ -30,7 +30,7 @@ public:
   /*
   * Initialize PID.
   */
-  void Init(double Kp, double Ki, double Kd);
+  void Init(const double& kp, const double& ki, const double& kd);
 
   /*
   * Update the PID error variables given cross track error.

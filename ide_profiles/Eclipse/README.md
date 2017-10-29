@@ -24,26 +24,24 @@ mkdir build
 ```
 mv CMakeLists.txt src
 ```
-2. Change the project name in the  `CMakeLists.txt` 
+2. Change the project name in the  `CMakeLists.txt`
 **(IMPORTANT) Your project name should be different from your executable name and different from your build folder name.**
 
 3. Remove  "_src_" from the path to `cpp` "_sources_". Your final `CMakeLists.txt`  should be similar to this:
 ```
-project(Extended_Kalman_Filter)
-
+project(PID_)
+```
 cmake_minimum_required (VERSION 3.5)
 
 add_definitions(-std=c++0x)
 
 set(sources
-    ./FusionEKF.cpp
-    ./kalman_filter.cpp
-    ./main.cpp
-    ./tools.cpp)
+    ./PID.cpp
+    ./main.cpp)
 
-add_executable(ExtendedKF ${sources})
+add_executable(pid ${sources})
 ```
-####3. CMake 
+####3. CMake
 Go to `build` directory
 ```
 cd build
