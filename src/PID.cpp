@@ -24,10 +24,15 @@ void PID::Init(const double& kp, const double& ki, const double& kd) {
 }
 
 void PID::UpdateError(double cte) {
+  d_error_  = cte - p_error_;
+  p_error_  = cte;
+  i_error_ += cte;
 }
 
 double PID::TotalError() {
-  double ret = 0;
+  double ret = -koeff_p_ * p_error_ - koeff_d_ * d_error_ - koeff_i_ * i_error_;
+  while (ret > 1) ret -=1;
+  while (ret < -1) ret +=1;
   return ret;
 }
 
