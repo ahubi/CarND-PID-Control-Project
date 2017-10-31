@@ -6,16 +6,16 @@ public:
   /*
   * Errors
   */
-  double p_error_;
-  double i_error_;
-  double d_error_;
+  double pe_;
+  double ie_;
+  double de_;
 
   /*
   * Coefficients
   */ 
-  double koeff_p_;
-  double koeff_i_;
-  double koeff_d_;
+  double Kp_;
+  double Ki_;
+  double Kd_;
 
   /*
   * Constructor
@@ -41,7 +41,6 @@ public:
   * Calculate the total PID error.
   */
   double TotalError();
-
 };
 
 #endif /* PID_H */
