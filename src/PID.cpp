@@ -13,16 +13,16 @@ PID::PID()
 
 PID::~PID() {}
 
-void PID::Init(const double& kp, const double& ki, const double& kd) {
-  Kp_ = kp;
-  Ki_ = ki;
-  Kd_ = kd;
+void PID::Init(const double& Kp, const double& Ki, const double& Kd) {
+  Kp_ = Kp;
+  Ki_ = Ki;
+  Kd_ = Kd;
 }
 
 void PID::UpdateError(double cte) {
-  de_  = cte - pe_;
-  pe_  = cte;
-  ie_ += cte;
+  de_  = cte - pe_; //calculate derivative error
+  pe_  = cte;       //set proportional error
+  ie_ += cte;       //calculate integral error
 }
 
 double PID::TotalError() {

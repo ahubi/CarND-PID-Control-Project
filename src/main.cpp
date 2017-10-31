@@ -31,13 +31,12 @@ std::string hasData(std::string s) {
 int main()
 {
   uWS::Hub h;
-  double steer_value, cte;
   PID pid;
   //pid.Init(0.1, 0.0015, 0.6); car drives around, but still shaky
   //pid.Init(0.1, 0.002, 0.5); car drives around, but still shaky, but look better
   //pid.Init(0.1, 0.002, 0.4);
 
-  pid.Init(0.1, 0.0002, 1.5);
+  pid.Init(0.09, 0.0001, 0.5);
 
 
   h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
@@ -52,7 +51,7 @@ int main()
         std::string event = j[0].get<std::string>();
         if (event == "telemetry") {
           // j[1] is the data JSON object
-          cte = std::stod(j[1]["cte"].get<std::string>());
+          double cte = std::stod(j[1]["cte"].get<std::string>());
 
           //double speed = std::stod(j[1]["speed"].get<std::string>());
           //double angle = std::stod(j[1]["steering_angle"].get<std::string>());
@@ -60,7 +59,7 @@ int main()
           //Update step
           pid.UpdateError(cte);
           //Calculation step
-          steer_value = pid.TotalError();
+          double steer_value = pid.TotalError();
           
           // DEBUG
           std::cout << "CTE: " << cte << " Steering Value: " << steer_value << std::endl;
