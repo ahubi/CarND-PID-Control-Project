@@ -1,7 +1,90 @@
 # CarND-Controls-PID
 Self-Driving Car Engineer Nanodegree Program
 
----
+[1]: http://www.ni.com/white-paper/3782/en/
+[2]: https://en.wikipedia.org/wiki/PID_controller
+
+### PID description
+
+Proportional-Integral-Derivative (PID) control is the most common control algorithm used in industry and has been universally accepted in industrial control. The popularity of PID controllers can be attributed partly to their robust performance in a wide range of operating conditions and partly to their functional simplicity, which allows engineers to operate them in a simple, straightforward manner. [[1]]
+
+PID algorithm consists of three basic parts:
+
+* P - Proportional
+* I - Integral
+* D - Derivative
+
+Each part can be controlled with a gain (K).
+
+#### Proportional
+This part is directly proportional to the error returned by the system.
+Increasing the proportional gain will increase the speed of the system response.
+However, if the proportional gain is too large, the process variable will begin to oscillate.
+Increasing the gain further will make the system unstable and get out of control.
+In this project inaccurately chosen value for proportional gain leads to quick overshoots of the car.
+
+#### Integral
+The integral component sums the error term over time.
+The goal with integral part is to remove the Systematic Bias of a system.
+
+#### Derivative
+The derivative component considers the rate of change of error and is
+trying to bring this rate to zero [[2]] In this project the rate of change is
+calculated by error(t) - error(t-1). Time is assumed to be always constant and
+therefore omitted.
+
+### PID implementation
+In this project the simulator returns a so called Cross Track Error (CTE) to
+provide feedback about car position in relation to car desired Track position.
+With provided CTE the PID controller calculates a new steering value and provides
+it back to the simulator which corrects car's track position.
+This steps are continuously repeated.
+
+##### Update step
+Here the CTE error is provided by the simulator to the PID controller.
+It calculates each error part (P, I, D) to be ready for total error calculation.
+```
+void PID::UpdateError(double cte) {
+  de_  = cte - pe_; //calculate derivative error
+  pe_  = cte;       //set proportional error
+  ie_ += cte;       //calculate integral error
+}
+```
+##### Total error
+Here the total error is calculated and returned to the simulator.
+```
+double PID::TotalError() {
+  double ret = -Kp_ * pe_ - Kd_ * de_ - Ki_ * ie_;
+  //Normalize to [-1,1]
+  while (ret > 1) ret -=1;
+  while (ret < -1) ret +=1;
+  return ret;
+}
+
+```
+##### Initialization step
+This step is performed only once during setup of the PID controller.
+The passed gains Kp, Ki and Kd are identified during Tuning process.
+```
+void PID::Init(const double& kp, const double& ki, const double& kd) {
+  Kp_ = kp;
+  Ki_ = ki;
+  Kd_ = kd;
+}
+```
+
+### PID Tuning
+To achieve optimal car driving behavior the gains must be selected. There are
+different tuning approaches to identify proper gains of a system.
+In this project I used manual tuning to find out gains to keep the car on track.
+After experiments with the simulator and trying on two different hardware machines
+Quadcore desktop CPU and laptop dualcore CPU following gains were finally
+chosen
+
+```
+  pid.Init(P = 0.1, I = 0.0002, D = 1.5);
+
+```
 
 ## Dependencies
 
@@ -19,7 +102,7 @@ Self-Driving Car Engineer Nanodegree Program
   * Run either `./install-mac.sh` or `./install-ubuntu.sh`.
   * If you install from source, checkout to commit `e94b6e1`, i.e.
     ```
-    git clone https://github.com/uWebSockets/uWebSockets 
+    git clone https://github.com/uWebSockets/uWebSockets
     cd uWebSockets
     git checkout e94b6e1
     ```
@@ -32,8 +115,8 @@ There's an experimental patch for windows in this [PR](https://github.com/udacit
 
 1. Clone this repo.
 2. Make a build directory: `mkdir build && cd build`
-3. Compile: `cmake .. && make`
-4. Run it: `./pid`. 
+3. Compile: `cmake ../src && make`
+4. Run it: `./pid`.
 
 Tips for setting up your environment can be found [here](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/0949fca6-b379-42af-a919-ee50aa304e6a/lessons/f758c44c-5e40-4e01-93b5-1a82aa4e044f/concepts/23d376c7-0195-4276-bdf0-e02f1f3c665d)
 
@@ -45,6 +128,7 @@ using the following settings:
 
 * indent using spaces
 * set tab width to 2 spaces (keeps the matrices in source code aligned)
+* This project can be used with Eclipse, see ide_profiles/Eclipse description.
 
 ## Code Style
 
@@ -58,41 +142,3 @@ cmake and make!
 More information is only accessible by people who are already enrolled in Term 2
 of CarND. If you are enrolled, see [the project page](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/f1820894-8322-4bb3-81aa-b26b3c6dcbaf/lessons/e8235395-22dd-4b87-88e0-d108c5e5bbf4/concepts/6a4d8d42-6a04-4aa6-b284-1697c0fd6562)
 for instructions and the project rubric.
-
-## Hints!
-
-* You don't have to follow this directory structure, but if you do, your work
-  will span all of the .cpp files here. Keep an eye out for TODOs.
-
-## Call for IDE Profiles Pull Requests
-
-Help your fellow students!
-
-We decided to create Makefiles with cmake to keep this project as platform
-agnostic as possible. Similarly, we omitted IDE profiles in order to we ensure
-that students don't feel pressured to use one IDE or another.
-
-However! I'd love to help people get up and running with their IDEs of choice.
-If you've created a profile for an IDE that you think other students would
-appreciate, we'd love to have you add the requisite profile files and
-instructions to ide_profiles/. For example if you wanted to add a VS Code
-profile, you'd add:
-
-* /ide_profiles/vscode/.vscode
-* /ide_profiles/vscode/README.md
-
-The README should explain what the profile does, how to take advantage of it,
-and how to install it.
-
-Frankly, I've never been involved in a project with multiple IDE profiles
-before. I believe the best way to handle this would be to keep them out of the
-repo root to avoid clutter. My expectation is that most profiles will include
-instructions to copy files to a new location to get picked up by the IDE, but
-that's just a guess.
-
-One last note here: regardless of the IDE used, every submitted project must
-still be compilable with cmake and make./
-
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
-
