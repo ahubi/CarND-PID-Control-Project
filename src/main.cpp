@@ -36,7 +36,7 @@ int main()
   //pid.Init(0.1, 0.002, 0.5); car drives around, but still shaky, but look better
   //pid.Init(0.1, 0.002, 0.4);
 
-  pid.Init(0.09, 0.0001, 0.5);
+  pid.Init(0.1, 0.0001, 0.6);
 
 
   h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
