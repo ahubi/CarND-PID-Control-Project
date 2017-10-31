@@ -82,7 +82,7 @@ Quadcore desktop CPU and laptop dualcore CPU following gains were finally
 chosen
 
 ```
-  pid.Init(P = 0.1, I = 0.0002, D = 1.5);
+pid.Init(0.1, 0.0001, 0.6);
 
 ```
 
